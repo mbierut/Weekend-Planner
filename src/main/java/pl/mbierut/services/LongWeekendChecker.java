@@ -8,22 +8,22 @@ import java.time.Period;
 
 @Service
 public class LongWeekendChecker {
-    int[] check(JSONArray array, int dayNum) throws JSONException {
+    int[] check(JSONArray array, int numberOfDays) throws JSONException {
         LocalDate endDate;
         LocalDate startDate;
         int period;
         int periodStart;
-        int[] addDays = {0, 0};
+        int[] extraDays = {0, 0};
         for (int i = 0; i < array.length(); i++){
             endDate = LocalDate.parse(array.getJSONObject(i).getString("endDate"));
             period = Period.between(LocalDate.now(), endDate).getDays();
-            if (period < dayNum + 3 && period >= 0){
-                addDays[0] = period - dayNum - 1;
+            if (period < numberOfDays + 3 && period >= 0){
+                extraDays[0] = period - numberOfDays - 1;
                 startDate = LocalDate.parse(array.getJSONObject(i).getString("startDate"));
                 periodStart = Period.between(LocalDate.now(), startDate).getDays();
-                addDays[1] = Math.max(0, periodStart);
+                extraDays[1] = Math.max(0, periodStart);
             }
         }
-        return addDays;
+        return extraDays;
     }
 }

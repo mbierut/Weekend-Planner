@@ -4,17 +4,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class JSONReader {
-    private ReverseDate reverseDate;
+    private RestTemplate restTemplate;
 
-    private JSONReader(ReverseDate reverseDate){
-        this.reverseDate = reverseDate;
-    }
+
+
+
 
     private String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -42,12 +46,16 @@ public class JSONReader {
     }
 
 
-    String parseWeatherJSON(JSONObject json, int dayNum, int beginDays) {
+    String parseWeatherJSON(JSONObject json, int numberOfDays, int beginDays) {
         StringBuilder sb = new StringBuilder();
+        String datePattern = "dd.MM.yyyy";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(datePattern);
+        LocalDate date;
         try {
             JSONArray arr = json.getJSONArray("data");
-            for (int i = Math.max(0, dayNum - 2 - beginDays); i < dayNum; i++) {
-                sb.append(reverseDate.reverse(arr.getJSONObject(i).getString("valid_date")))
+            for (int i = Math.max(0, numberOfDays - 2 - beginDays); i < numberOfDays; i++) {
+                date = LocalDate.parse(arr.getJSONObject(i).getString("valid_date"));
+                sb.append(dateTimeFormatter.format(date))
                         .append(System.getProperty("line.separator"))
                         .append(arr.getJSONObject(i).getJSONObject("weather").getString("description"))
                         .append(System.getProperty("line.separator"))
