@@ -1,9 +1,10 @@
 package pl.mbierut.services;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import pl.mbierut.models.LongWeekendWrapper;
+import pl.mbierut.models.Weather;
+import pl.mbierut.models.weatherdata.WeatherData;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public class WeatherSearch {
     private String key;
     @Value("${urlLongWeekend}")
     private String urlLongWeekend;
+    private int year = LocalDate.now().getYear();
 
     public WeatherSearch(JSONReader jsonReader, DayOfWeek dayOfWeek, LongWeekendChecker longWeekendChecker) {
         this.jsonReader = jsonReader;
@@ -25,26 +27,36 @@ public class WeatherSearch {
         this.longWeekendChecker = longWeekendChecker;
     }
 
-    public String getData(String cityName) {
-        String result;
-        int numberOfDays = dayOfWeek.getDaysUntilWeekendIncl();
-        int[] extraDays;
+    private Weather getWeatherData(String cityName){
         String urlWeatherFull = this.urlWeather + cityName + this.key;
-        int year = LocalDate.now().getYear();
-        String urlLongWeekendFull = this.urlLongWeekend + year + "/PL";
-        try {
-            JSONArray longWeekendJSON = jsonReader.readJsonArrFromUrl(urlLongWeekendFull);
-            extraDays = longWeekendChecker.check(longWeekendJSON, numberOfDays);
-            numberOfDays += extraDays[0];
-            urlWeatherFull += numberOfDays;
-            JSONObject weatherJSON = jsonReader.readJsonFromUrl(urlWeatherFull);
-            int beginDays = extraDays[1];
+        return jsonReader.parseToWeatherData(urlWeatherFull);
 
-            result = jsonReader.parseWeatherJSON(weatherJSON, numberOfDays, beginDays);
-        } catch (Exception e) {
-            e.printStackTrace();
-            result = "error";
+    }
+
+    public String getOutputData(String cityName){
+        int[] extraDays;
+        int numberOfDays = this.dayOfWeek.getDaysUntilWeekendIncl();
+        String urlLongWeekendFull = urlLongWeekend + year;
+        StringBuilder result = new StringBuilder();
+
+        LongWeekendWrapper longWeekend = jsonReader.parseToLongWeekendData(urlLongWeekendFull);
+        extraDays = longWeekendChecker.getExtraDays(longWeekend, numberOfDays);
+
+        WeatherSearch weatherSearch = new WeatherSearch(this.jsonReader, this.dayOfWeek, this.longWeekendChecker);
+        Weather weather = weatherSearch.getWeatherData(cityName);
+
+        result.append("Pogoda dla: ").append(cityName);
+
+        //W tym miejscu wybieramy dane które chcemy wyświetlić użytkownikowi
+
+        for (int i = Math.max(0, numberOfDays - 2 - extraDays[1]); i < numberOfDays + extraDays[0]; i++) {
+            WeatherData data = weather.getData().get(i);
+            result.append(data.getDatetime())
+                    .append(data.getWeatherSubsection().getDescription())
+                    .append(data.getTemp());
         }
-        return result;
+
+        return result.toString();
+
     }
 }

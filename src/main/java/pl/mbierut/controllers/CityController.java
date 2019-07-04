@@ -29,7 +29,7 @@ public class CityController {
     @PostMapping("/results")
     public String showResults(@RequestParam String city, Model model) {
         model.addAttribute("city", city);
-        String data = weatherSearch.getData(city);
+        String data = weatherSearch.getOutputData(city);
         model.addAttribute("data", data);
         return "results";
     }
