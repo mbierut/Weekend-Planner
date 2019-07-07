@@ -2,7 +2,6 @@ package pl.mbierut.services;
 
 import org.springframework.stereotype.Service;
 import pl.mbierut.models.LongWeekend;
-import pl.mbierut.models.LongWeekendWrapper;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -10,13 +9,13 @@ import java.time.Period;
 @Service
 public class LongWeekendChecker {
 
-    int[] getExtraDays(LongWeekendWrapper longWeekend, int numberOfDays){
+    int[] getExtraDays(LongWeekend[] longWeekend, int numberOfDays){
         int[] extraDays = {0,  0};
         LocalDate endDate;
         LocalDate beginDate;
         int longWeekendEnd;
         int longWeekendBegin;
-        for (LongWeekend weekend : longWeekend.getLongWeekends()) {
+        for (LongWeekend weekend : longWeekend) {
             endDate = weekend.getEndDate();
             longWeekendEnd = Period.between(LocalDate.now(), endDate).getDays();
             if (longWeekendEnd < numberOfDays + 3 && longWeekendEnd >= 0) {

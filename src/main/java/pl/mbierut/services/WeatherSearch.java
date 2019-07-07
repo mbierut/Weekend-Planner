@@ -2,7 +2,7 @@ package pl.mbierut.services;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pl.mbierut.models.LongWeekendWrapper;
+import pl.mbierut.models.LongWeekend;
 import pl.mbierut.models.Weather;
 import pl.mbierut.models.weatherdata.WeatherData;
 
@@ -17,8 +17,8 @@ public class WeatherSearch {
     private String urlWeather;
     @Value("${key}")
     private String key;
-//    @Value("${urlLongWeekend}")
-    private String urlLongWeekend = "https://date.nager.at/Api/v2/LongWeekend";
+    @Value("${urlLongWeekend}")
+    private String urlLongWeekend;
     private String year = Integer.toString(LocalDate.now().getYear());
 
     public WeatherSearch(JSONReader jsonReader, DayOfWeek dayOfWeek, LongWeekendChecker longWeekendChecker) {
@@ -36,10 +36,10 @@ public class WeatherSearch {
     public String getOutputData(String cityName){
         int[] extraDays;
         int numberOfDays = this.dayOfWeek.getDaysUntilWeekendIncl();
-        String urlLongWeekendFull = urlLongWeekend + year;
+        String urlLongWeekendFull = urlLongWeekend + year + "/PL";
         StringBuilder result = new StringBuilder();
 
-        LongWeekendWrapper longWeekend = jsonReader.parseToLongWeekendData(urlLongWeekendFull);
+        LongWeekend[] longWeekend = jsonReader.parseToLongWeekendData(urlLongWeekendFull);
         extraDays = longWeekendChecker.getExtraDays(longWeekend, numberOfDays);
 
         WeatherSearch weatherSearch = new WeatherSearch(this.jsonReader, this.dayOfWeek, this.longWeekendChecker);
