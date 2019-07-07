@@ -36,7 +36,7 @@ public class WeatherSearch {
     public String getOutputData(String cityName){
         int[] extraDays;
         int numberOfDays = this.dayOfWeek.getDaysUntilWeekendIncl();
-        String urlLongWeekendFull = urlLongWeekend + year + "/PL";
+        String urlLongWeekendFull = this.urlLongWeekend + year + "/PL";
         StringBuilder result = new StringBuilder();
 
         LongWeekend[] longWeekend = jsonReader.parseToLongWeekendData(urlLongWeekendFull);
