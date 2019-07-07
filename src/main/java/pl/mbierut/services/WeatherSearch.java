@@ -17,9 +17,9 @@ public class WeatherSearch {
     private String urlWeather;
     @Value("${key}")
     private String key;
-    @Value("${urlLongWeekend}")
-    private String urlLongWeekend;
-    private int year = LocalDate.now().getYear();
+//    @Value("${urlLongWeekend}")
+    private String urlLongWeekend = "https://date.nager.at/Api/v2/LongWeekend";
+    private String year = Integer.toString(LocalDate.now().getYear());
 
     public WeatherSearch(JSONReader jsonReader, DayOfWeek dayOfWeek, LongWeekendChecker longWeekendChecker) {
         this.jsonReader = jsonReader;
