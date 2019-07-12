@@ -34,7 +34,7 @@ public class WeatherData {
     int max_dhi;
     int clouds_dhi;
     int precip;
-    WeatherSubsection weatherSubsection;
+    WeatherSubsection weather;
     double max_temp;
     int moonset_ts;
     LocalDate datetime;

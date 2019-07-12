@@ -7,6 +7,7 @@ import pl.mbierut.models.Weather;
 import pl.mbierut.models.weatherdata.WeatherData;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class WeatherSearch {
@@ -37,23 +38,22 @@ public class WeatherSearch {
         int[] extraDays;
         int numberOfDays = this.dayOfWeek.getDaysUntilWeekendIncl();
         String urlLongWeekendFull = this.urlLongWeekend + year + "/PL";
+        String datePattern = "dd.MM.yyyy";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
         StringBuilder result = new StringBuilder();
 
         LongWeekend[] longWeekend = jsonReader.parseToLongWeekendData(urlLongWeekendFull);
         extraDays = longWeekendChecker.getExtraDays(longWeekend, numberOfDays);
 
-        WeatherSearch weatherSearch = new WeatherSearch(this.jsonReader, this.dayOfWeek, this.longWeekendChecker);
-        Weather weather = weatherSearch.getWeatherData(cityName);
+        Weather weather = getWeatherData(cityName);
 
-        result.append("Pogoda dla: ").append(cityName);
-
-        //W tym miejscu wybieramy dane które chcemy wyświetlić użytkownikowi
+        //Here we're choosing which data to show the user
 
         for (int i = Math.max(0, numberOfDays - 2 - extraDays[1]); i < numberOfDays + extraDays[0]; i++) {
             WeatherData data = weather.getData().get(i);
-            result.append(data.getDatetime())
-                    .append(data.getWeatherSubsection().getDescription())
-                    .append(data.getTemp());
+            result.append(formatter.format(data.getDatetime())).append(": ").append(System.getProperty("line.separator"))
+                    .append(data.getWeather().getDescription()).append(" ")
+                    .append(data.getTemp()).append(System.getProperty("line.separator"));
         }
 
         return result.toString();

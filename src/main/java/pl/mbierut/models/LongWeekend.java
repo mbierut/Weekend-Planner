@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Data
 public class LongWeekend {
     LocalDate endDate;
-    LocalDate beginDate;
+    LocalDate startDate;
     int dayCount;
     boolean needBridgeDay;
 }
