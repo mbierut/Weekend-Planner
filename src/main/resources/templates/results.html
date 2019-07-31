@@ -7,7 +7,7 @@
 <body>
 <p th:text="${data.size() > 2} ? 'Pogoda na najbliższy długi weekend dla ' + ${city} : 'Pogoda na najbliższy weekend dla ' + ${city}"/>
 <tr th:each="weather :${data}">
-    <img th:src="static/${weather.getWeather().getCode()}.png">
+    <img th:src="${'static/' + weather.getWeather().getCode() + '.png'}">
     <td th:text="${weather.getDatetime()}"/>
     <td th:text="${weather.getWeather().getDescription()}"/>
     <td th:text="${weather.getTemp()} + '&#8451;'"/>
