@@ -9,6 +9,7 @@ import pl.mbierut.models.weather.WeatherData;
 import pl.mbierut.models.weekend.Weekend;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 import java.util.List;
@@ -42,6 +43,9 @@ public class WeekendWeatherService {
         List<Weekend> longWeekendDataForCurrentYearInPoland = longWeekendClient.getLongWeekendDataForCurrentYearInPoland();
         for (Weekend longWeekend : longWeekendDataForCurrentYearInPoland){
             if (longWeekend.hasOverlapWith(nextRegularWeekend)){
+                if (Period.between(LocalDate.now(), longWeekend.getStartDate()).getDays() < 0){
+                    longWeekend.setStartDate(LocalDate.now());
+                }
                 return longWeekend;
             }
         }
