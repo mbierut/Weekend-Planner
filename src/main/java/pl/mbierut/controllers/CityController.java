@@ -28,7 +28,7 @@ public class CityController {
         return "error";
     }
 
-    @PostMapping("/results")
+    @PostMapping("/")
     public String showResults(@RequestParam String city, Model model) {
         List<WeatherData> weatherData = weekendWeatherService.getWeatherForWeekend(city);
         model.addAttribute("city", city);

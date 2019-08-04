@@ -35,6 +35,4 @@ public class WeatherClient {
         return data.stream().collect(Collectors.toMap(WeatherData::getDatetime, d -> d));
     }
 
-
-
 }

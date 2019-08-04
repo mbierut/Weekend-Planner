@@ -32,6 +32,9 @@ public class WeekendWeatherService {
     private Weekend getNextRegularWeekend(){
         LocalDate end = LocalDate.now().with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
         LocalDate start = end.minusDays(1);
+        if (LocalDate.now().equals(end)){
+            start = end;
+        }
         return new Weekend(start, end);
     }
 
