@@ -4,17 +4,25 @@
     <meta charset="UTF-8">
     <title>Pogoda w weekend</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<p th:text="${data.size() > 2} ? 'Pogoda na najbliższy długi weekend dla ' + ${city} : 'Pogoda na najbliższy weekend dla ' + ${city}"/>
+<h3>
+<p class="text-center" th:text="${data.size() > 2} ? 'Pogoda na najbliższy długi weekend dla ' + ${city} : 'Pogoda na najbliższy weekend dla ' + ${city}"/>
+</h3>
+<div class="row">
 <div th:each="weather :${data}">
-    <div>
-    <div th:text="${#temporals.format(weather.getDatetime(), 'dd.MM.yyyy, EEEE')}"/>
-    <img th:src="${weather.getWeather().getCode() + '.png'}">
+    <div class="col">
+    <div class="card" style="width: 180px">
+    <div class="card-title" th:text="${#temporals.format(weather.getDatetime(), 'dd.MM.yyyy, EEEE')}"/>
+    <img width="120px" height="120px" th:src="${weather.getWeather().getCode() + '.png'}">
     <div th:text="${weather.getTemp()} + '&#8451;'"/>
     <div th:text="${weather.getWeather().getDescription()}"/>
-    </div>
+    </div></div>
 </div>
-<a href="/">Powrót do wyszukiwania</a>
+</div>
+<div class="navbar fixed-bottom left">
+<a href="/" class="btn btn-info"><span class="glyphicon glyphicon-chevron-left"></span> Powrót</a>
+</div>
 </body>
 </html>
